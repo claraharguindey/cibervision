@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cibervision</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <form id="translationForm">
+      <label for="objectSelect">Selecciona el objeto a traducir:</label>
+      <select id="objectSelect">
+        <option value="person">persona</option>
+        <option value="bottle">botella</option>
+        <option value="book">libro</option>
+        <option value="clock">reloj</option>
+        <option value="cup">taza</option>
+        <option value="keyboard">teclado</option>
+        <option value="laptop">portátil</option>
+        <option value="painting">cuadro</option>
+        <option value="chair">silla</option>
+        <option value="couch">sofá</option>
+        <option value="plant">planta</option>
+        <option value="tree">árbol</option>
+        <option value="kite">cometa</option>
+        <option value="animal">animal</option>
+        <option value="article">artículo</option>
+        <option value="bank">banco</option>
+        <option value="box">caja</option>
+        <option value="computer">computadora</option>
+        <option value="flower">flor</option>
+        <option value="cell phone">móvil</option>
+        <option value="fan">ventilador</option>
+      </select>
+      <label for="newTranslation">Nueva traducción:</label>
+      <input
+        type="text"
+        id="newTranslation"
+        placeholder="Introduce nueva traducción"
+      />
+      <button type="submit">Actualizar traducción</button>
+    </form>
+
+    <script src="script.js"></script>
+    <script src="sketch.js"></script>
+  </body>
 </html>
