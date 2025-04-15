@@ -29,7 +29,7 @@ canvas {
 label {
   display: block;
   margin: 10px 0 5px;
-  font-size: 14px;
+  font-size: 28px;
   color: #555555;
 }
 
@@ -41,7 +41,7 @@ input {
   margin-bottom: 10px;
   border: 1px solid #dddddd;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 28px;
 }
 
 button {
@@ -52,7 +52,7 @@ button {
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -67,18 +67,4 @@ button:active {
 
 form {
   background-color: #f5f5f5;
-}
-
-@media screen and (max-width: 767px) {
-  label,
-  select,
-  input,
-  button {
-    font-size: 14px;
-    padding: 8px;
-  }
-
-  #translationForm {
-    padding: 8px 12px;
-  }
 }
