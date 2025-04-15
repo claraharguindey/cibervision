@@ -1,55 +1,45 @@
-// ml5.js: Object Detection with COCO-SSD (Webcam)
-// The Coding Train / Daniel Shiffman
-// https://thecodingtrain.com/learning/ml5/1.3-object-detection.html
-// https://youtu.be/QEzRxnuaZCk
-
-// p5.js Web Editor - Image: https://editor.p5js.org/codingtrain/sketches/ZNQQx2n5o
-// p5.js Web Editor - Webcam: https://editor.p5js.org/codingtrain/sketches/VIYRpcME3
-// p5.js Web Editor - Webcam Persistence: https://editor.p5js.org/codingtrain/sketches/Vt9xeTxWJ
-
-// let img;
 let video;
 let detector;
 let detections = [];
 let translations = {
-  "person": "persona",
-  "bottle": "botella",
-  "book": "libro",
-  "clock": "reloj",
-  "cup": "taza",
-  "keyboard": "teclado",
-  "laptop": "portátil",
-  "painting": "cuadro",
-  "chair": "silla",
-  "couch": "sofá",
-  "plant": "planta",  
-  "tree": "árbol",    
-  "kite": "cometa", 
-  "animal": "animal",  
-  "article": "artículo", 
-  "bank": "banco", 
-  "box": "caja", 
-  "computer": "computadora", 
-  "flower": "flor", 
+  person: "persona",
+  bottle: "botella",
+  book: "libro",
+  clock: "reloj",
+  cup: "taza",
+  keyboard: "teclado",
+  laptop: "portátil",
+  painting: "cuadro",
+  chair: "silla",
+  couch: "sofá",
+  plant: "planta",
+  tree: "árbol",
+  kite: "cometa",
+  animal: "animal",
+  article: "artículo",
+  bank: "banco",
+  box: "caja",
+  computer: "computadora",
+  flower: "flor",
   "cell phone": "teléfono móvil",
-  "fan": "ventilador"
+  fan: "ventilador",
 };
 
-document.getElementById("translationForm").addEventListener("submit", function(e) {
-  e.preventDefault();  // Evita que el formulario recargue la página
-  let selectedLabel = document.getElementById("objectSelect").value;
-  let newTranslation = document.getElementById("newTranslation").value.trim();
+document
+  .getElementById("translationForm")
+  .addEventListener("submit", function (e) {
+    e.preventDefault(); // Evita que el formulario recargue la página
+    let selectedLabel = document.getElementById("objectSelect").value;
+    let newTranslation = document.getElementById("newTranslation").value.trim();
 
-  // Actualizar el diccionario de traducciones si el campo no está vacío
-  if (newTranslation) {
-    translations[selectedLabel] = newTranslation;
-  }
-});
-
+    // Actualizar el diccionario de traducciones si el campo no está vacío
+    if (newTranslation) {
+      translations[selectedLabel] = newTranslation;
+    }
+  });
 
 function preload() {
-  // img = loadImage('dog_cat.jpg');
-  detector = ml5.objectDetector('cocossd');
+  detector = ml5.objectDetector("cocossd");
 }
 
 function gotDetections(error, results) {
@@ -68,18 +58,17 @@ function setup() {
   detector.detect(video, gotDetections);
 }
 
-
 function draw() {
   image(video, 0, 0);
 
   for (let i = 0; i < detections.length; i++) {
     let object = detections[i];
     let label = object.label;
-    
+
     if (translations[label]) {
       label = translations[label];
     }
-    
+
     stroke(0, 255, 0);
     strokeWeight(4);
     noFill();
