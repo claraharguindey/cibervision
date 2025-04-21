@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
-    <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <meta charset="utf-8" />
-  </head>
 
-  <body>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
+  <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta charset="utf-8" />
+</head>
+
+<body>
+  <button id="openFormBtn">cambiar visión</button>
+  <div id="formOverlay">
+    <p class="info">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi quae rem nihil odit, blanditiis neque, doloremque reprehenderit laboriosam quisquam soluta adipisci accusantium beatae magni facere sed. At aspernatur ea deleniti!</p>
     <form id="translationForm">
       <label for="objectSelect">Yo digo que es:</label>
       <select id="objectSelect">
@@ -34,16 +38,37 @@
         <option value="flower">flor</option>
         <option value="cell phone">móvil</option>
         <option value="fan">ventilador</option>
+        <option value="tv">televisión</option>
       </select>
+
       <label for="newTranslation">Tú dices que es:</label>
-      <input
-        type="text"
-        id="newTranslation"
-        placeholder="(escribe tu palabra)"
-      />
+      <input type="text" id="newTranslation" placeholder="(escribe tu palabra)" />
+
       <button type="submit">Guardar</button>
     </form>
+  </div>
+  <script src="sketch.js"></script>
+  <script>
+    const openBtn = document.getElementById('openFormBtn');
+    const formOverlay = document.getElementById('formOverlay');
+    const translationForm = document.getElementById('translationForm');
 
-    <script src="sketch.js"></script>
-  </body>
+    openBtn.addEventListener('click', () => {
+      formOverlay.style.display = 'flex';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === formOverlay) {
+        formOverlay.style.display = 'none';
+      }
+    });
+
+    translationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formOverlay.style.display = 'none';
+
+    });
+  </script>
+</body>
+
 </html>

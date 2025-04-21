@@ -27,9 +27,9 @@ let translations = {
   flower: "flor",
   "cell phone": "teléfono móvil",
   fan: "ventilador",
+  tv: "televisión"
 };
 
-// Usar un evento para actualizar traducciones
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById("translationForm")
     .addEventListener("submit", function(e) {
@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-  // Ajustar CSS para que el canvas ocupe el ancho completo
   const style = document.createElement('style');
   style.textContent = `
     body, html { 
@@ -55,12 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
       width: 100% !important; 
       height: auto !important; 
     }
-    #translationForm {
-      position: relative;
-      z-index: 10;
-      padding: 10px;
-      background: rgba(255,255,255,0.8);
-    }
+  
   `;
   document.head.appendChild(style);
 });
