@@ -3,7 +3,8 @@ let detector;
 let detections = [];
 let isDetecting = false;
 let lastDetectionTime = 0;
-let detectionInterval = 500; // Intervalo entre detecciones en ms
+let detectionInterval = 500; // ms entre detecciones
+let canvas;
 let translations = {
   person: "persona",
   bottle: "botella",
@@ -27,36 +28,37 @@ let translations = {
   flower: "flor",
   "cell phone": "teléfono móvil",
   fan: "ventilador",
-  tv: "televisión"
+  tv: "televisión",
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById("translationForm")
-    .addEventListener("submit", function(e) {
-      e.preventDefault();
-      let selectedLabel = document.getElementById("objectSelect").value;
-      let newTranslation = document.getElementById("newTranslation").value.trim();
-      if (newTranslation) {
-        translations[selectedLabel] = newTranslation;
-      }
-    });
-    
-  const style = document.createElement('style');
-  style.textContent = `
-    body, html { 
-      margin: 0; 
-      padding: 0; 
-      width: 100%; 
-      overflow-x: hidden; 
+// Gestión del formulario
+document.addEventListener("DOMContentLoaded", function () {
+  const openBtn = document.getElementById("openFormBtn");
+  const closeBtn = document.getElementById("closeFormBtn");
+  const formOverlay = document.getElementById("formOverlay");
+  const translationForm = document.getElementById("translationForm");
+
+  openBtn.addEventListener("click", () => {
+    formOverlay.style.display = "flex";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    formOverlay.style.display = "none";
+  });
+
+  translationForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    let selectedLabel = document.getElementById("objectSelect").value;
+    let newTranslation = document.getElementById("newTranslation").value.trim();
+
+    if (newTranslation) {
+      translations[selectedLabel] = newTranslation;
+      document.getElementById("newTranslation").value = "";
     }
-    canvas { 
-      display: block; 
-      width: 100% !important; 
-      height: auto !important; 
-    }
-  
-  `;
-  document.head.appendChild(style);
+
+    formOverlay.style.display = "none";
+  });
 });
 
 function preload() {
@@ -71,30 +73,67 @@ function gotDetections(error, results) {
   isDetecting = false;
 }
 
+// Enfoque completamente diferente para resolver el problema de la distorsión
 function setup() {
-  // Usar el ancho completo de la ventana sin margen
-  const fullWidth = windowWidth;
-  // Mantener la relación de aspecto
-  const fullHeight = (fullWidth / 4) * 3; 
-  
-  // Crear el canvas al 100% del ancho
-  createCanvas(fullWidth, fullHeight);
-  
-  // Configuración de vídeo también al 100% del ancho
+  // Creamos un canvas con dimensiones iniciales
+  canvas = createCanvas(640, 480);
+  canvas.parent("canvas-container");
+
+  // Configuración de vídeo - IMPORTANTE: NO ajustamos el tamaño del video
+  // Dejamos que la cámara use su resolución nativa
   const constraints = {
     video: {
-      facingMode: "environment", // Usa cámara trasera en móviles
-      width: { ideal: fullWidth },
-      height: { ideal: fullHeight }
-    }
+      facingMode: "environment",
+    },
   };
-  
-  video = createCapture(constraints);
-  video.size(fullWidth, fullHeight);
+
+  video = createCapture(constraints, function (stream) {
+    // Una vez que el video está listo, ajustamos el canvas a la proporción real del video
+    setTimeout(adjustCanvasToVideo, 500);
+  });
+
   video.hide();
-  
-  // Iniciar primera detección
+
+  // Iniciar detección
   requestDetection();
+}
+
+// Función para ajustar el canvas a la proporción real del video
+function adjustCanvasToVideo() {
+  if (video.width && video.height) {
+    // Mantenemos la proporción exacta del video
+    const containerWidth =
+      document.getElementById("canvas-container").offsetWidth;
+    const containerHeight =
+      document.getElementById("canvas-container").offsetHeight;
+
+    // Calculamos el tamaño máximo que puede tener el video manteniendo su proporción
+    const videoRatio = video.width / video.height;
+
+    let newWidth, newHeight;
+
+    // Decidimos si ajustamos por ancho o por alto
+    if (containerWidth / containerHeight > videoRatio) {
+      // El contenedor es más ancho que el video
+      newHeight = containerHeight;
+      newWidth = containerHeight * videoRatio;
+    } else {
+      // El contenedor es más alto que el video
+      newWidth = containerWidth;
+      newHeight = containerWidth / videoRatio;
+    }
+
+    // Redimensionamos el canvas a la proporción exacta del video
+    resizeCanvas(newWidth, newHeight);
+
+    console.log(
+      `Video real: ${video.width}x${video.height}, ratio: ${videoRatio}`
+    );
+    console.log(`Canvas ajustado: ${newWidth}x${newHeight}`);
+  } else {
+    // Si aún no tenemos dimensiones, intentamos de nuevo
+    setTimeout(adjustCanvasToVideo, 500);
+  }
 }
 
 function requestDetection() {
@@ -106,59 +145,53 @@ function requestDetection() {
 }
 
 function draw() {
-  // Dibujar frame
+  // Dibujamos el video completo en el canvas (que ya tiene la proporción correcta)
+  background(0);
   image(video, 0, 0, width, height);
-  
-  // Dibujar detecciones almacenadas
+
+  // Dibujamos las detecciones
   for (let i = 0; i < detections.length; i++) {
     let object = detections[i];
-    
-    // Adaptar coordenadas si el tamaño del canvas es diferente al del video
+
+    // Escalamos las coordenadas para que coincidan con el tamaño del canvas
     const scaleX = width / video.width;
     const scaleY = height / video.height;
-    
+
     let x = object.x * scaleX;
     let y = object.y * scaleY;
-    let w = object.width * scaleX;
-    let h = object.height * scaleY;
-    
-    // Usar traducción si existe, o mantener la etiqueta original
+    let objWidth = object.width * scaleX;
+    let objHeight = object.height * scaleY;
+
+    // Usamos traducción si existe, o mantenemos la etiqueta original
     let label = translations[object.label] || object.label;
-    
-    // Usar strokeWeight más delgado para móviles
+
+    // Dibujamos el recuadro
     stroke(0, 255, 0);
-    strokeWeight(2);
+    strokeWeight(3);
     noFill();
-    rect(x, y, w, h);
-    
-    // Usar texto más pequeño y con fondo para mejor legibilidad
+    rect(x, y, objWidth, objHeight);
+
+    // Dibujamos la etiqueta con fondo
     noStroke();
     fill(0, 200);
-    rect(x, y, textWidth(label) + 20, 24);
+    rect(x, y - 30, textWidth(label) + 20, 30);
     fill(255);
-    textSize(16);
-    text(label, x + 10, y + 16);
+    textSize(20);
+    text(label, x + 10, y - 8);
   }
-  
-  // Solicitar nueva detección
+
+  // Solicitamos nueva detección
   requestDetection();
 }
 
 // Manejar cambios de orientación o tamaño de ventana
 function windowResized() {
-  const fullWidth = windowWidth;
-  const fullHeight = (fullWidth / 4) * 3;
-  
-  resizeCanvas(fullWidth, fullHeight);
-  
-  // Redimensionar el video también
-  if (video) {
-    video.size(fullWidth, fullHeight);
-  }
+  // Reajustamos el canvas cuando cambia el tamaño de la ventana
+  adjustCanvasToVideo();
 }
 
-// Pausa las detecciones cuando la página no está visible
-document.addEventListener('visibilitychange', function() {
+// Pausar las detecciones cuando la página no está visible
+document.addEventListener("visibilitychange", function () {
   if (document.hidden) {
     isDetecting = true; // Evita nuevas detecciones
   } else {
@@ -166,4 +199,3 @@ document.addEventListener('visibilitychange', function() {
     lastDetectionTime = 0; // Permite reanudar las detecciones
   }
 });
-

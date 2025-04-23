@@ -2,17 +2,22 @@
 <html lang="en">
 
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Detección de Objetos</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
   <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-  <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <button id="openFormBtn">cambiar visión</button>
+  <div id="canvas-container"></div>
+
   <div id="formOverlay">
-    <p class="info">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi quae rem nihil odit, blanditiis neque, doloremque reprehenderit laboriosam quisquam soluta adipisci accusantium beatae magni facere sed. At aspernatur ea deleniti!</p>
+    <button id="closeFormBtn">×</button>
+    <p class="info">Personaliza cómo quieres nombrar los objetos que detecta la aplicación</p>
     <form id="translationForm">
       <label for="objectSelect">Yo digo que es:</label>
       <select id="objectSelect">
@@ -47,28 +52,7 @@
       <button type="submit">Guardar</button>
     </form>
   </div>
-  <script src="sketch.js"></script>
-  <script>
-    const openBtn = document.getElementById('openFormBtn');
-    const formOverlay = document.getElementById('formOverlay');
-    const translationForm = document.getElementById('translationForm');
-
-    openBtn.addEventListener('click', () => {
-      formOverlay.style.display = 'flex';
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target === formOverlay) {
-        formOverlay.style.display = 'none';
-      }
-    });
-
-    translationForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      formOverlay.style.display = 'none';
-
-    });
-  </script>
+  <script src="./sketch.js"></script>
 </body>
 
 </html>
