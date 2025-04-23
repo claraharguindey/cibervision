@@ -1,6 +1,8 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  font-size: 32px;
+  color: white;
 }
 
 body, html { 
@@ -31,19 +33,17 @@ canvas {
 }
 
 #openFormBtn {
-  font-size: 32px;
   padding: 20px;
   width: 100%;
   background-color: black;
-  color: white;
-  border: none;
+  border: 1px solid #333;
   margin: 0;
   cursor: pointer;
   z-index: 10;
 }
 
 #formOverlay {
-  background: white;
+  background: black;
   position: fixed;
   top: 0;
   left: 0;
@@ -58,7 +58,6 @@ canvas {
 
 .info {
   padding: 20px;
-  font-size: 32px;
   margin: 0;
 }
 
@@ -75,32 +74,28 @@ canvas {
   right: 20px;
   background: none;
   border: none;
-  font-size: 40px;
   cursor: pointer;
   z-index: 1001;
 }
 
 label {
-  font-size: 40px;
   margin: 20px 0 10px;
 }
 
 select,
 input {
-  font-size: 40px;
   padding: 18px;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #444;
   margin-bottom: 20px;
+  background-color: #111;
 }
 
 button[type="submit"] {
-  font-size: 28px;
   padding: 20px;
   width: 100%;
-  background-color: black;
-  color: white;
-  border: none;
+  background-color: #222;
+  border: 1px solid #444;
   border-radius: 10px;
   cursor: pointer;
   margin-bottom: 40px;

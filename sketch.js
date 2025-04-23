@@ -173,7 +173,7 @@ function draw() {
 
     // Dibujamos la etiqueta con fondo
     noStroke();
-    fill(0, 200);
+    fill(0);
     rect(x, y - 30, textWidth(label) + 20, 30);
     fill(255);
     textSize(20);
