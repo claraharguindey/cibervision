@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   translationForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
     let selectedLabel = document.getElementById("objectSelect").value;
     let newTranslation = document.getElementById("newTranslation").value.trim();
 
@@ -73,71 +72,59 @@ function gotDetections(error, results) {
   isDetecting = false;
 }
 
-// Enfoque completamente diferente para resolver el problema de la distorsión
 function setup() {
-  // Creamos un canvas con dimensiones iniciales
   canvas = createCanvas(640, 480);
   canvas.parent("canvas-container");
 
-  // Configuración de vídeo - IMPORTANTE: NO ajustamos el tamaño del video
-  // Dejamos que la cámara use su resolución nativa
   const constraints = {
     video: {
       facingMode: "environment",
     },
   };
 
-  video = createCapture(constraints, function (stream) {
-    // Una vez que el video está listo, ajustamos el canvas a la proporción real del video
-    setTimeout(adjustCanvasToVideo, 500);
+  video = createCapture(constraints, function () {
+    let checkVideoReady = setInterval(() => {
+      if (video.width > 0 && video.height > 0) {
+        clearInterval(checkVideoReady);
+        adjustCanvasToVideo();
+        requestDetection();
+      }
+    }, 100);
   });
 
   video.hide();
-
-  // Iniciar detección
-  requestDetection();
 }
 
-// Función para ajustar el canvas a la proporción real del video
 function adjustCanvasToVideo() {
   if (video.width && video.height) {
-    // Mantenemos la proporción exacta del video
-    const containerWidth =
-      document.getElementById("canvas-container").offsetWidth;
-    const containerHeight =
-      document.getElementById("canvas-container").offsetHeight;
-
-    // Calculamos el tamaño máximo que puede tener el video manteniendo su proporción
+    const container = document.getElementById("canvas-container");
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
     const videoRatio = video.width / video.height;
 
     let newWidth, newHeight;
-
-    // Decidimos si ajustamos por ancho o por alto
     if (containerWidth / containerHeight > videoRatio) {
-      // El contenedor es más ancho que el video
       newHeight = containerHeight;
       newWidth = containerHeight * videoRatio;
     } else {
-      // El contenedor es más alto que el video
       newWidth = containerWidth;
       newHeight = containerWidth / videoRatio;
     }
 
-    // Redimensionamos el canvas a la proporción exacta del video
     resizeCanvas(newWidth, newHeight);
-
-    console.log(
-      `Video real: ${video.width}x${video.height}, ratio: ${videoRatio}`
-    );
     console.log(`Canvas ajustado: ${newWidth}x${newHeight}`);
   } else {
-    // Si aún no tenemos dimensiones, intentamos de nuevo
     setTimeout(adjustCanvasToVideo, 500);
   }
 }
 
 function requestDetection() {
-  if (!isDetecting && millis() - lastDetectionTime > detectionInterval) {
+  if (
+    !isDetecting &&
+    millis() - lastDetectionTime > detectionInterval &&
+    video.width > 0 &&
+    video.height > 0
+  ) {
     isDetecting = true;
     lastDetectionTime = millis();
     detector.detect(video, gotDetections);
@@ -145,15 +132,11 @@ function requestDetection() {
 }
 
 function draw() {
-  // Dibujamos el video completo en el canvas (que ya tiene la proporción correcta)
   background(0);
   image(video, 0, 0, width, height);
 
-  // Dibujamos las detecciones
   for (let i = 0; i < detections.length; i++) {
     let object = detections[i];
-
-    // Escalamos las coordenadas para que coincidan con el tamaño del canvas
     const scaleX = width / video.width;
     const scaleY = height / video.height;
 
@@ -161,17 +144,13 @@ function draw() {
     let y = object.y * scaleY;
     let objWidth = object.width * scaleX;
     let objHeight = object.height * scaleY;
-
-    // Usamos traducción si existe, o mantenemos la etiqueta original
     let label = translations[object.label] || object.label;
 
-    // Dibujamos el recuadro
     stroke(0, 255, 0);
     strokeWeight(3);
     noFill();
     rect(x, y, objWidth, objHeight);
 
-    // Dibujamos la etiqueta con fondo
     noStroke();
     fill(0);
     rect(x, y - 30, textWidth(label) + 20, 30);
@@ -180,22 +159,18 @@ function draw() {
     text(label, x + 10, y - 8);
   }
 
-  // Solicitamos nueva detección
   requestDetection();
 }
 
-// Manejar cambios de orientación o tamaño de ventana
 function windowResized() {
-  // Reajustamos el canvas cuando cambia el tamaño de la ventana
   adjustCanvasToVideo();
 }
 
-// Pausar las detecciones cuando la página no está visible
 document.addEventListener("visibilitychange", function () {
   if (document.hidden) {
-    isDetecting = true; // Evita nuevas detecciones
+    isDetecting = true;
   } else {
     isDetecting = false;
-    lastDetectionTime = 0; // Permite reanudar las detecciones
+    lastDetectionTime = 0;
   }
 });
