@@ -33,7 +33,17 @@ let translations = {
   tv: "televisión",
 };
 
-// Gestión del formulario
+function updateObjectSelectOptions() {
+  const select = document.getElementById("objectSelect");
+  select.innerHTML = "";
+  Object.keys(translations).forEach((label) => {
+    const option = document.createElement("option");
+    option.value = label;
+    option.textContent = translations[label] ? translations[label] : label;
+    select.appendChild(option);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const openBtn = document.getElementById("openFormBtn");
   const closeBtn = document.getElementById("closeFormBtn");
@@ -55,11 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (newTranslation) {
       translations[selectedLabel] = newTranslation;
+      updateObjectSelectOptions(); // 👈 Refrescar <select> después de guardar
       document.getElementById("newTranslation").value = "";
     }
 
     formOverlay.style.display = "none";
   });
+
+  updateObjectSelectOptions(); // 👈 Llenar <select> al cargar la página
 });
 
 function preload() {
