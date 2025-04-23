@@ -5,6 +5,7 @@ let isDetecting = false;
 let lastDetectionTime = 0;
 let detectionInterval = 500; // ms entre detecciones
 let canvas;
+
 let translations = {
   person: "persona",
   bottle: "botella",
@@ -27,6 +28,7 @@ let translations = {
   computer: "computadora",
   flower: "flor",
   "cell phone": "teléfono móvil",
+  "potted plant": "maceta",
   fan: "ventilador",
   tv: "televisión",
 };
@@ -38,15 +40,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const formOverlay = document.getElementById("formOverlay");
   const translationForm = document.getElementById("translationForm");
 
-  openBtn.addEventListener("click", () => {
+  openBtn?.addEventListener("click", () => {
     formOverlay.style.display = "flex";
   });
 
-  closeBtn.addEventListener("click", () => {
+  closeBtn?.addEventListener("click", () => {
     formOverlay.style.display = "none";
   });
 
-  translationForm.addEventListener("submit", (e) => {
+  translationForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     let selectedLabel = document.getElementById("objectSelect").value;
     let newTranslation = document.getElementById("newTranslation").value.trim();
@@ -87,6 +89,7 @@ function setup() {
       if (video.width > 0 && video.height > 0) {
         clearInterval(checkVideoReady);
         adjustCanvasToVideo();
+        document.getElementById("loader").style.display = "none"; // Oculta el loader
         requestDetection();
       }
     }, 100);

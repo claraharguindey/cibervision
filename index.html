@@ -13,6 +13,22 @@
 
 <body>
   <button id="openFormBtn">cambiar visión</button>
+  <div id="loader" style="
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 1.5rem;
+  z-index: 9999;
+">
+    Cargando cámara...
+  </div>
   <div id="canvas-container"></div>
 
   <div id="formOverlay">
@@ -44,6 +60,7 @@
         <option value="computer">computadora</option>
         <option value="flower">flor</option>
         <option value="cell phone">móvil</option>
+        <option value="potted plant">maceta</option>
         <option value="fan">ventilador</option>
         <option value="tv">televisión</option>
       </select>
