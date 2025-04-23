@@ -3,7 +3,7 @@ let detector;
 let detections = [];
 let isDetecting = false;
 let lastDetectionTime = 0;
-let detectionInterval = 500; // ms entre detecciones
+let detectionInterval = 500;
 let canvas;
 
 let translations = {
@@ -65,14 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (newTranslation) {
       translations[selectedLabel] = newTranslation;
-      updateObjectSelectOptions(); // 👈 Refrescar <select> después de guardar
+      updateObjectSelectOptions();
       document.getElementById("newTranslation").value = "";
     }
 
     formOverlay.style.display = "none";
   });
 
-  updateObjectSelectOptions(); // 👈 Llenar <select> al cargar la página
+  updateObjectSelectOptions();
 });
 
 function preload() {
@@ -102,7 +102,7 @@ function setup() {
       if (video.width > 0 && video.height > 0) {
         clearInterval(checkVideoReady);
         adjustCanvasToVideo();
-        document.getElementById("loader").style.display = "none"; // Oculta el loader
+        document.getElementById("loader").style.display = "none";
         requestDetection();
       }
     }, 100);
